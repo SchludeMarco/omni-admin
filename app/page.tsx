@@ -6,16 +6,27 @@ import { APPS } from "@/lib/apps";
 import { useSession } from "@/lib/session";
 import { Badge, Icon, PageHead, StatusBadge, btn } from "@/components/ui";
 
-function Kpi({ label, icon, value, sub, tone = "text-accent" }: { label: string; icon: string; value: string; sub: string; tone?: string }) {
-  return (
-    <div className="flex flex-col rounded-xl bg-s-lowest p-4 shadow-card">
+function Kpi({ label, icon, value, sub, tone = "text-accent", href }: { label: string; icon: string; value: string; sub: string; tone?: string; href?: string }) {
+  const cls = "flex flex-col rounded-xl bg-s-lowest p-4 shadow-card";
+  const body = (
+    <>
       <div className="mb-1 flex items-center justify-between text-[11px] font-semibold text-muted">
         {label}
         <Icon name={icon} size={16} className={tone} />
       </div>
       <div className="text-2xl font-semibold">{value}</div>
-      <div className="mt-1 text-[12px] text-muted">{sub}</div>
-    </div>
+      <div className="mt-1 flex items-center justify-between text-[12px] text-muted">
+        {sub}
+        {href && <Icon name="chevron_right" size={16} />}
+      </div>
+    </>
+  );
+  return href ? (
+    <Link href={href} className={`${cls} transition active:scale-[0.98] hover:bg-s-low`}>
+      {body}
+    </Link>
+  ) : (
+    <div className={cls}>{body}</div>
   );
 }
 
@@ -69,8 +80,8 @@ export default function Overview() {
       <div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
         <Kpi label="Apps" icon="apps" value={String(APPS.length)} sub="nur für eingeladene Gäste" />
         <Kpi label="Online" icon="cloud_done" value={online === null ? "–" : String(online)} sub="gerade erreichbar" tone="text-ok" />
-        <Kpi label="Gäste" icon="group" value={String(guests.length)} sub="eingeladene Personen" />
-        <Kpi label="Zugang" icon="key" value="Google" sub="Anmeldung für Gäste" tone="text-warn" />
+        <Kpi label="Gäste" icon="group" value={String(guests.length)} sub="eingeladene Personen" href="/gaeste" />
+        <Kpi label="Einladen" icon="person_add" value="+" sub="neue Person" tone="text-warn" href="/einladen" />
       </div>
 
       <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center">
@@ -115,9 +126,10 @@ export default function Overview() {
             </div>
             <p className="text-[13px] text-muted">{a.description}</p>
             <div className="flex items-center justify-between rounded-lg bg-s-low/60 px-3 py-2 text-[12px] text-muted">
-              <span className="flex items-center gap-1">
+              <Link href={`/gaeste?app=${a.id}`} className="flex items-center gap-1 rounded-lg py-1 pr-2 font-medium text-ink">
                 <Icon name="group" size={16} /> {guests.filter((g) => appsOf(g).includes(a.id)).length} Gäste
-              </span>
+                <Icon name="chevron_right" size={14} className="text-muted" />
+              </Link>
               <span className="flex gap-1.5">
                 <Link href={`/apps/${a.id}`} className="rounded-lg bg-s-lowest px-2.5 py-1 font-medium text-ink">
                   Details

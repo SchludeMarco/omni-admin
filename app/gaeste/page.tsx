@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APPS } from "@/lib/apps";
 import { useSession } from "@/lib/session";
 import { AppChips, AppPicker } from "@/components/AppPicker";
@@ -94,6 +94,12 @@ export default function Guests() {
   const { guests, admin, appsOf, reloadGuests, guestsConfigured, error } = useSession();
   const [query, setQuery] = useState("");
   const [appFilter, setAppFilter] = useState<string>("alle");
+
+  // Aus der Übersicht kommend (?app=rumble): gleich nach dieser App filtern.
+  useEffect(() => {
+    const app = new URLSearchParams(window.location.search).get("app");
+    if (app && APPS.some((a) => a.id === app)) setAppFilter(app);
+  }, []);
 
   const q = query.trim().toLowerCase();
   const list = guests.filter((g) => (!q || g.includes(q)) && (appFilter === "alle" || appsOf(g).includes(appFilter)));
