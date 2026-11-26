@@ -100,13 +100,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [guestsConfigured, setGuestsConfigured] = useState(true);
   const [status, setStatus] = useState<Record<string, AppStatus> | null>(null);
   const [statusAt, setStatusAt] = useState<string | null>(null);
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("dunkel");
   const tokenRef = useRef<Token | null>(null);
   const clientRef = useRef<TokenClient | null>(null);
 
   // Farbschema
   useEffect(() => {
-    let t: Theme = "system";
+    let t: Theme = "dunkel";
     try {
       const stored = localStorage.getItem(THEME_KEY);
       if (stored === "hell" || stored === "dunkel" || stored === "system") t = stored;
@@ -115,9 +115,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     applyTheme(t);
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      let cur: Theme = "system";
+      let cur: Theme = "dunkel";
       try {
-        cur = (localStorage.getItem(THEME_KEY) as Theme) || "system";
+        cur = (localStorage.getItem(THEME_KEY) as Theme) || "dunkel";
       } catch {}
       if (cur === "system") applyTheme("system");
     };

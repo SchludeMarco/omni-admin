@@ -10,7 +10,7 @@ die gemeinsame Gästeliste und Einladungen an einem Ort. Design aus Google Stitc
 - **Gäste** – die gemeinsame Gästeliste ansehen, Gäste entfernen
 - **Einladen** – Google-Adresse eintragen und danach eine fertige Einladung per WhatsApp, E-Mail oder Zwischenablage verschicken
 - **App-Detail** – Adresse, GitHub-Repo, Antwortzeit und wer Zugang hat
-- **Einstellungen** – Farbschema (hell, dunkel, System) und die Zugangsregeln im Überblick
+- **Einstellungen** – Farbschema (Standard: dunkel; wählbar: hell oder wie das System) und die Zugangsregeln im Überblick
 
 ## Wie es funktioniert
 

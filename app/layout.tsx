@@ -13,18 +13,15 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f9ff" },
-    { media: "(prefers-color-scheme: dark)", color: "#051424" },
-  ],
+  themeColor: "#051424",
 };
 
 // Setzt das Farbschema vor dem ersten Zeichnen, damit nichts aufblitzt.
-const themeScript = `try{var t=localStorage.getItem("omni.theme")||"system";if(t==="dunkel"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}`;
+const themeScript = `try{var t=localStorage.getItem("omni.theme")||"dunkel";var d=t==="dunkel"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d)}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" className="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

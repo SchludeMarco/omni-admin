@@ -6,7 +6,7 @@ import { Badge, Card, CardTitle, Icon, PageHead, btn } from "@/components/ui";
 
 const THEMES: { id: Theme; label: string; icon: string }[] = [
   { id: "hell", label: "Hell", icon: "light_mode" },
-  { id: "dunkel", label: "Dunkel", icon: "dark_mode" },
+  { id: "dunkel", label: "Dunkel (Standard)", icon: "dark_mode" },
   { id: "system", label: "System", icon: "settings_suggest" },
 ];
 
