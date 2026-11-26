@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { APPS } from "@/lib/apps";
 import { useSession } from "@/lib/session";
+import { Galaxy } from "./Galaxy";
+import { HubLogo } from "./HubLogo";
 import { Badge, Icon, btn } from "./ui";
 
 const NAV = [
@@ -15,47 +17,67 @@ const NAV = [
 
 function Logo() {
   return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-on-accent">
-      <Icon name="hub" size={20} />
+    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent">
+      <HubLogo size={28} />
     </span>
+  );
+}
+
+function Space({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden p-6 text-white">
+      <Galaxy />
+      <div className="relative z-10 w-full max-w-sm">{children}</div>
+    </div>
   );
 }
 
 function SignIn() {
   const { signIn, error } = useSession();
   return (
-    <div className="flex min-h-dvh items-center justify-center p-6">
-      <div className="w-full max-w-sm rounded-2xl bg-s-lowest p-6 text-center shadow-card">
-        <div className="mx-auto mb-4 w-fit">
-          <Logo />
+    <Space>
+      <div className="flex flex-col items-center text-center">
+        <div className="hub-glow mb-6 flex h-32 w-32 items-center justify-center rounded-[2rem] bg-gradient-to-br from-[#5b4ff0] to-[#3525b8] ring-1 ring-white/20">
+          <HubLogo size={116} animated />
         </div>
-        <h1 className="text-xl font-semibold">Omni Admin</h1>
-        <p className="mt-1 text-[13px] text-muted">Einstellungen und Einladungen für alle deine Apps an einem Ort.</p>
-        <button className={`${btn.primary} mt-6 w-full`} onClick={signIn}>
-          <Icon name="login" size={18} /> Mit Google anmelden
+        <h1 className="bg-gradient-to-r from-white via-[#d9d6ff] to-[#a5b4fc] bg-clip-text text-4xl font-bold tracking-tight text-transparent">
+          Omni Admin
+        </h1>
+        <p className="mt-2 text-[14px] text-white/70">Einstellungen und Einladungen für alle deine Apps an einem Ort.</p>
+        <button
+          className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-white/95 text-[14px] font-semibold text-[#1e1b4b] shadow-[0_0_30px_rgba(129,140,248,0.45)] transition active:scale-[0.98]"
+          onClick={signIn}
+        >
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z" />
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" />
+          </svg>
+          Mit Google anmelden
         </button>
-        {error && <p className="mt-3 text-[12px] text-err">{error}</p>}
-        <p className="mt-4 text-[11px] text-outline">Nur für den Inhaber. Gäste melden sich direkt in den Apps an.</p>
+        {error && <p className="mt-3 text-[12px] text-red-300">{error}</p>}
+        <p className="mt-5 text-[11px] text-white/45">Nur für den Inhaber. Gäste melden sich direkt in den Apps an.</p>
       </div>
-    </div>
+    </Space>
   );
 }
 
 function Denied() {
   const { signOut } = useSession();
   return (
-    <div className="flex min-h-dvh items-center justify-center p-6">
-      <div className="w-full max-w-sm rounded-2xl bg-s-lowest p-6 text-center shadow-card">
-        <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-err-bg text-err">
+    <Space>
+      <div className="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10 backdrop-blur-md">
+        <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20 text-red-300">
           <Icon name="lock" />
         </div>
         <h1 className="text-lg font-semibold">Kein Zugriff</h1>
-        <p className="mt-1 text-[13px] text-muted">Mit diesem Google-Konto kannst du Omni Admin nicht verwalten.</p>
-        <button className={`${btn.soft} mt-5 w-full`} onClick={signOut}>
+        <p className="mt-1 text-[13px] text-white/70">Mit diesem Google-Konto kannst du Omni Admin nicht verwalten.</p>
+        <button className="mt-5 h-10 w-full rounded-lg bg-white/10 text-[13px] font-medium" onClick={signOut}>
           Anderes Konto verwenden
         </button>
       </div>
-    </div>
+    </Space>
   );
 }
 
@@ -65,9 +87,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   if (phase === "loading")
     return (
-      <div className="flex min-h-dvh items-center justify-center text-muted">
-        <Icon name="progress_activity" className="animate-spin" />
-      </div>
+      <Space>
+        <div className="hub-glow mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#5b4ff0] to-[#3525b8]">
+          <HubLogo size={78} animated />
+        </div>
+      </Space>
     );
   if (phase === "signedOut") return <SignIn />;
   if (phase === "denied") return <Denied />;

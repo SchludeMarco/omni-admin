@@ -71,3 +71,62 @@ body {
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* ---- Startseite: funkelnde Galaxie ---- */
+.galaxy {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 45% at 78% 22%, rgba(124, 58, 237, 0.35), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 18% 78%, rgba(67, 56, 202, 0.4), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(236, 72, 153, 0.14), transparent 70%),
+    radial-gradient(ellipse 35% 25% at 30% 25%, rgba(14, 165, 233, 0.16), transparent 70%),
+    radial-gradient(ellipse at 50% 50%, #0b1030 0%, #050816 60%, #02030a 100%);
+}
+.galaxy::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 30% 20% at 60% 40%, rgba(167, 139, 250, 0.18), transparent 70%),
+    radial-gradient(ellipse 25% 18% at 35% 60%, rgba(56, 189, 248, 0.12), transparent 70%);
+  animation: nebula-drift 40s ease-in-out infinite alternate;
+}
+.galaxy canvas {
+  position: absolute;
+  inset: 0;
+}
+@keyframes nebula-drift {
+  from { transform: translate(-3%, -2%) rotate(0deg) scale(1); }
+  to { transform: translate(3%, 2%) rotate(8deg) scale(1.08); }
+}
+
+/* ---- Logo: jede Spitze wird nacheinander kurz dick ---- */
+.hub-anim .hub-spoke {
+  animation: hub-spoke 3s ease-in-out infinite;
+}
+.hub-anim .hub-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hub-node 3s ease-in-out infinite;
+}
+@keyframes hub-spoke {
+  0%, 22%, 100% { stroke-width: 4; }
+  9% { stroke-width: 10; }
+}
+@keyframes hub-node {
+  0%, 22%, 100% { transform: scale(1); stroke-width: 4; }
+  9% { transform: scale(1.35); stroke-width: 5.5; }
+}
+.hub-glow {
+  filter: drop-shadow(0 0 18px rgba(129, 140, 248, 0.65)) drop-shadow(0 0 48px rgba(124, 58, 237, 0.35));
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-anim .hub-spoke,
+  .hub-anim .hub-node,
+  .galaxy::before {
+    animation: none;
+  }
+}
