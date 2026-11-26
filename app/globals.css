@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --surface: 248 249 255;
+  --s-lowest: 255 255 255;
+  --s-low: 239 244 255;
+  --s-mid: 229 238 255;
+  --s-high: 220 233 255;
+  --s-highest: 211 228 254;
+  --ink: 11 28 48;
+  --muted: 70 69 84;
+  --outline: 119 117 134;
+  --line: 199 196 215;
+  --primary: 42 20 180;
+  --accent: 67 56 202;
+  --on-accent: 255 255 255;
+  --accent-soft: 227 223 255;
+  --ok: 6 95 70;
+  --ok-bg: 236 253 245;
+  --warn: 146 64 14;
+  --warn-bg: 255 251 235;
+  --err: 185 28 28;
+  --err-bg: 254 242 242;
+  color-scheme: light;
+}
+
+.dark {
+  --surface: 5 20 36;
+  --s-lowest: 1 15 31;
+  --s-low: 13 28 45;
+  --s-mid: 18 33 49;
+  --s-high: 28 43 60;
+  --s-highest: 39 54 71;
+  --ink: 212 228 250;
+  --muted: 199 196 215;
+  --outline: 144 143 160;
+  --line: 70 69 84;
+  --primary: 192 193 255;
+  --accent: 99 102 241;
+  --on-accent: 255 255 255;
+  --accent-soft: 47 46 120;
+  --ok: 78 222 163;
+  --ok-bg: 0 56 36;
+  --warn: 255 185 95;
+  --warn-bg: 66 40 0;
+  --err: 255 180 171;
+  --err-bg: 105 0 5;
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  -webkit-tap-highlight-color: transparent;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  line-height: 1;
+  user-select: none;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
