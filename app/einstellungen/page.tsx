@@ -88,7 +88,6 @@ export default function Settings() {
         <Card>
           <CardTitle icon="lightbulb" title="Kommt als Nächstes" />
           <ul className="flex flex-col gap-1.5 text-[13px] text-muted">
-            <li className="flex gap-2"><Icon name="radio_button_unchecked" size={16} /> Zugang nur zu einzelnen Apps</li>
             <li className="flex gap-2"><Icon name="radio_button_unchecked" size={16} /> Rollen (Gast, Tester)</li>
             <li className="flex gap-2"><Icon name="radio_button_unchecked" size={16} /> Gemeinsames Farbschema & Impressum für alle Apps</li>
           </ul>

@@ -19,7 +19,7 @@ function Row({ icon, label, children }: { icon: string; label: string; children:
 export default function AppDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const app = findApp(id);
-  const { status, guests } = useSession();
+  const { status, guests: allGuests, appsOf } = useSession();
 
   if (!app)
     return (
@@ -32,6 +32,7 @@ export default function AppDetail({ params }: { params: Promise<{ id: string }> 
     );
 
   const s = status?.[app.id];
+  const guests = allGuests.filter((g) => appsOf(g).includes(app.id));
 
   return (
     <>
@@ -82,7 +83,7 @@ export default function AppDetail({ params }: { params: Promise<{ id: string }> 
               {s ? `${s.ms} ms` : "–"}
             </Row>
             <Row icon="lock" label="Zugang">
-              Nur eingeladene Gäste
+              Nur freigeschaltete Gäste
             </Row>
           </div>
           {app.note && <p className="mt-3 text-[12px] text-muted">{app.note}</p>}
@@ -98,7 +99,7 @@ export default function AppDetail({ params }: { params: Promise<{ id: string }> 
               </Link>
             }
           />
-          <p className="mb-2 text-[12px] text-muted">Alle {guests.length} Gäste der gemeinsamen Liste und du.</p>
+          <p className="mb-2 text-[12px] text-muted">{guests.length} von {allGuests.length} Gästen und du.</p>
           <div className="flex max-h-72 flex-col gap-1.5 overflow-y-auto">
             {guests.map((g) => (
               <div key={g} className="flex items-center gap-2.5 rounded-lg bg-s-low p-2">

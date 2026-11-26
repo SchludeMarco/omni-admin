@@ -14,15 +14,19 @@ export async function GET(req: Request) {
   }
 }
 
-// Gast hinzufügen oder entfernen: { action: "add" | "remove", email }
+// Gast hinzufügen, entfernen oder seine Apps ändern:
+// { action: "add" | "remove" | "apps", email, apps?: string[] | null }  (null = alle Apps)
+const ACTIONS: Record<string, string> = { add: "guestAdd", remove: "guestRemove", apps: "guestApps" };
+
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => ({}))) as { action?: string; email?: string };
-  const action = body.action === "add" ? "guestAdd" : body.action === "remove" ? "guestRemove" : null;
+  const body = (await req.json().catch(() => ({}))) as { action?: string; email?: string; apps?: unknown };
+  const action = ACTIONS[body.action || ""];
   if (!action || typeof body.email !== "string") return Response.json({ error: "bad_request" }, { status: 400 });
+  const apps = Array.isArray(body.apps) ? body.apps.map(String) : null;
   try {
     const { status, data } = await retromindAdmin({
       method: "POST",
-      body: { action, email: body.email },
+      body: { action, email: body.email, apps },
       auth: auth(req),
     });
     return Response.json(data, { status, headers: { "Cache-Control": "no-store" } });

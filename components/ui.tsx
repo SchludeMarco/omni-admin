@@ -108,6 +108,8 @@ export const btn = {
   primary:
     "inline-flex items-center justify-center gap-1.5 rounded-xl bg-accent px-4 h-11 text-[13px] font-semibold text-on-accent shadow-sm active:scale-[0.98] transition disabled:opacity-60",
   soft: "inline-flex items-center justify-center gap-1.5 rounded-lg bg-s-low px-3 h-9 text-[12px] font-medium text-ink hover:bg-s-mid transition",
+  accentSm:
+    "inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-3 h-9 text-[12px] font-semibold text-on-accent transition disabled:opacity-60",
   danger:
     "inline-flex items-center justify-center gap-1.5 rounded-lg bg-err-bg px-3 h-9 text-[12px] font-medium text-err hover:opacity-90 transition",
 };

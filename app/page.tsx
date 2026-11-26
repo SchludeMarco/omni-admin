@@ -26,7 +26,7 @@ function since(iso: string | null) {
 }
 
 export default function Overview() {
-  const { guests, status, statusAt, reloadStatus } = useSession();
+  const { guests, appsOf, status, statusAt, reloadStatus } = useSession();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"alle" | "online" | "offline">("alle");
   const [busy, setBusy] = useState(false);
@@ -67,7 +67,7 @@ export default function Overview() {
       />
 
       <div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
-        <Kpi label="Apps" icon="apps" value={String(APPS.length)} sub="mit gemeinsamer Gästeliste" />
+        <Kpi label="Apps" icon="apps" value={String(APPS.length)} sub="nur für eingeladene Gäste" />
         <Kpi label="Online" icon="cloud_done" value={online === null ? "–" : String(online)} sub="gerade erreichbar" tone="text-ok" />
         <Kpi label="Gäste" icon="group" value={String(guests.length)} sub="eingeladene Personen" />
         <Kpi label="Zugang" icon="key" value="Google" sub="Anmeldung für Gäste" tone="text-warn" />
@@ -116,7 +116,7 @@ export default function Overview() {
             <p className="text-[13px] text-muted">{a.description}</p>
             <div className="flex items-center justify-between rounded-lg bg-s-low/60 px-3 py-2 text-[12px] text-muted">
               <span className="flex items-center gap-1">
-                <Icon name="group" size={16} /> {guests.length} Gäste
+                <Icon name="group" size={16} /> {guests.filter((g) => appsOf(g).includes(a.id)).length} Gäste
               </span>
               <span className="flex gap-1.5">
                 <Link href={`/apps/${a.id}`} className="rounded-lg bg-s-lowest px-2.5 py-1 font-medium text-ink">

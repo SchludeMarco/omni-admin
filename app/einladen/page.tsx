@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { APPS } from "@/lib/apps";
 import { useSession } from "@/lib/session";
+import { AppChips, AppPicker } from "@/components/AppPicker";
 import { Avatar, Card, CardTitle, Icon, PageHead, btn } from "@/components/ui";
 
 const validEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) && s.length <= 200;
 
-function inviteText(name: string, email: string, note: string) {
+function inviteText(name: string, email: string, note: string, ids: string[]) {
   const hello = name.trim() ? `Hallo ${name.trim()},` : "Hallo,";
-  const apps = APPS.map((a) => `• ${a.name} – ${a.description}: ${a.url}`).join("\n");
+  const apps = APPS.filter((a) => ids.includes(a.id)).map((a) => `• ${a.name} – ${a.description}: ${a.url}`).join("\n");
   return [
     hello,
     "",
@@ -30,6 +31,7 @@ export default function Invite() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
+  const [apps, setApps] = useState<string[]>(APPS.map((a) => a.id));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
@@ -42,15 +44,16 @@ export default function Invite() {
     e.preventDefault();
     setError(null);
     if (!validEmail(clean)) return setError("Bitte gib eine gültige E-Mail-Adresse ein.");
+    if (apps.length === 0) return setError("Wähl mindestens eine App aus.");
     setBusy(true);
-    const r = await addGuest(clean);
+    const r = await addGuest(clean, apps.length === APPS.length ? null : apps);
     setBusy(false);
     if (!r.ok) return setError(r.error || "Das hat nicht geklappt.");
     setDone(clean);
   };
 
   if (done) {
-    const text = inviteText(name, done, note);
+    const text = inviteText(name, done, note, apps);
     const copy = async () => {
       try {
         await navigator.clipboard.writeText(text);
@@ -75,9 +78,11 @@ export default function Invite() {
             </span>
           </div>
           <p className="mt-3 text-[13px] text-muted">
-            Steht jetzt auf der Gästeliste und kommt in alle {APPS.length} Apps. Schick die Nachricht unten, damit die Person
-            davon erfährt.
+            Steht jetzt auf der Gästeliste. Schick die Nachricht unten, damit die Person davon erfährt.
           </p>
+          <div className="mt-2 flex flex-wrap gap-1">
+            <AppChips ids={apps} />
+          </div>
         </Card>
         <Card className="mb-3">
           <CardTitle icon="chat" title="Nachricht" />
@@ -102,6 +107,7 @@ export default function Invite() {
               setName("");
               setEmail("");
               setNote("");
+              setApps(APPS.map((a) => a.id));
             }}
           >
             <Icon name="person_add" size={18} /> Weitere Person
@@ -116,7 +122,7 @@ export default function Invite() {
 
   return (
     <form onSubmit={submit}>
-      <PageHead title="Neue Einladung" sub="Eine Person für alle Apps freischalten" />
+      <PageHead title="Neue Einladung" sub="Eine Person für deine Apps freischalten" />
 
       <Card className="mb-3">
         <CardTitle icon="badge" title="Person" />
@@ -147,22 +153,12 @@ export default function Invite() {
       </Card>
 
       <Card className="mb-3">
-        <CardTitle icon="apps" title="Zugang zu" right={<span className="text-[11px] font-semibold text-muted">alle {APPS.length} Apps</span>} />
-        <div className="grid gap-1.5 md:grid-cols-2">
-          {APPS.map((a) => (
-            <div key={a.id} className="flex items-center gap-3 rounded-lg bg-s-low p-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-s-lowest text-primary">
-                <Icon name={a.icon} size={18} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium">{a.name}</span>
-                <span className="block truncate text-[11px] text-muted">{a.description}</span>
-              </span>
-              <Icon name="check_circle" size={18} className="text-ok" />
-            </div>
-          ))}
-        </div>
-        <p className="mt-2 text-[11px] text-muted">Alle Apps teilen sich eine Gästeliste. Zugang nur für einzelne Apps gibt es noch nicht.</p>
+        <CardTitle
+          icon="apps"
+          title="Zugang zu"
+          right={<span className="text-[11px] font-semibold text-muted">{apps.length === APPS.length ? "alle Apps" : `${apps.length} von ${APPS.length}`}</span>}
+        />
+        <AppPicker value={apps} onChange={setApps} />
       </Card>
 
       <Card className="mb-4">
@@ -176,7 +172,11 @@ export default function Invite() {
         />
       </Card>
 
-      {already && <p className="mb-3 rounded-xl bg-warn-bg p-3 text-[13px] text-warn">Diese Adresse steht schon auf der Gästeliste.</p>}
+      {already && (
+        <p className="mb-3 rounded-xl bg-warn-bg p-3 text-[13px] text-warn">
+          Diese Adresse steht schon auf der Gästeliste. Ihre Apps änderst du unter „Gäste“.
+        </p>
+      )}
       {error && <p className="mb-3 rounded-xl bg-err-bg p-3 text-[13px] text-err">{error}</p>}
 
       <button type="submit" className={`${btn.primary} w-full`} disabled={busy || already}>

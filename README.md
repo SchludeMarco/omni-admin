@@ -7,8 +7,8 @@ die gemeinsame Gästeliste und Einladungen an einem Ort. Design aus Google Stitc
 ## Was Omni Admin kann
 
 - **Übersicht** – alle Apps mit Status (online / nicht erreichbar), Suche und Filter
-- **Gäste** – die gemeinsame Gästeliste ansehen, Gäste entfernen
-- **Einladen** – Google-Adresse eintragen und danach eine fertige Einladung per WhatsApp, E-Mail oder Zwischenablage verschicken
+- **Gäste** – alle eingeladenen Gäste mit ihren Apps, Filter nach App, Apps pro Gast ändern, Gäste entfernen
+- **Einladen** – Google-Adresse eintragen, Apps auswählen (alle oder einzelne) und danach eine fertige Einladung per WhatsApp, E-Mail oder Zwischenablage verschicken
 - **App-Detail** – Adresse, GitHub-Repo, Antwortzeit und wer Zugang hat
 - **Einstellungen** – Farbschema (Standard: dunkel; wählbar: hell oder wie das System) und die Zugangsregeln im Überblick
 
@@ -18,6 +18,7 @@ die gemeinsame Gästeliste und Einladungen an einem Ort. Design aus Google Stitc
 - Die Gästeliste liegt bei RetroMind (Upstash, `rm:guests`). Omni Admin leitet Lesen und Ändern
   serverseitig an `https://retromind.vercel.app/api/admin` weiter. Dort wird das Google-Token geprüft,
   Omni Admin speichert keine Geheimnisse.
+- Welche Apps ein Gast benutzen darf, steht ebenfalls bei RetroMind (`rm:guest-apps`). Ohne Eintrag: alle Apps.
 - Neue App: in `lib/apps.ts` eintragen und in RetroMind bei `APP_ORIGINS` ergänzen.
 
 Optionale Umgebungsvariable: `RETROMIND_URL` (Standard `https://retromind.vercel.app`).
@@ -29,6 +30,5 @@ unter **Autorisierte JavaScript-Quellen** ergänzen, sonst öffnet sich der Goog
 
 ## Ideen
 
-- Zugang nur zu einzelnen Apps
 - Rollen (Gast, Tester)
 - Gemeinsames Farbschema und Impressum für alle Apps

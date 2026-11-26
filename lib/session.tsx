@@ -4,6 +4,7 @@
 // für die ganze App. Das Google-Token bleibt nur in diesem Browser-Tab
 // (sessionStorage) und läuft nach etwa einer Stunde ab.
 
+import { APPS } from "./apps";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 type Token = { accessToken: string; expiresAt: number };
@@ -16,10 +17,14 @@ type Ctx = {
   signIn: () => void;
   signOut: () => void;
   guests: string[];
+  /** Gäste, die nur einige Apps benutzen dürfen (alle anderen: alle Apps). */
+  access: Record<string, string[]>;
+  appsOf: (email: string) => string[];
   admin: string | null;
   guestsConfigured: boolean;
   reloadGuests: () => Promise<void>;
-  addGuest: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  addGuest: (email: string, apps?: string[] | null) => Promise<{ ok: boolean; error?: string }>;
+  setGuestApps: (email: string, apps: string[] | null) => Promise<{ ok: boolean; error?: string }>;
   removeGuest: (email: string) => Promise<{ ok: boolean; error?: string }>;
   status: Record<string, AppStatus> | null;
   statusAt: string | null;
@@ -96,6 +101,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<Ctx["phase"]>("loading");
   const [error, setError] = useState<string | null>(null);
   const [guests, setGuests] = useState<string[]>([]);
+  const [access, setAccess] = useState<Record<string, string[]>>({});
   const [admin, setAdmin] = useState<string | null>(null);
   const [guestsConfigured, setGuestsConfigured] = useState(true);
   const [status, setStatus] = useState<Record<string, AppStatus> | null>(null);
@@ -156,8 +162,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       setPhase("ready");
       return;
     }
-    const data = (await res.json()) as { guests: string[]; admin: string; configured: boolean };
+    const data = (await res.json()) as { guests: string[]; access?: Record<string, string[]>; admin: string; configured: boolean };
     setGuests(data.guests || []);
+    setAccess(data.access || {});
     setAdmin(data.admin || null);
     setGuestsConfigured(data.configured !== false);
     setError(null);
@@ -176,7 +183,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const change = useCallback(
-    async (action: "add" | "remove", email: string) => {
+    async (action: "add" | "remove" | "apps", email: string, apps?: string[] | null) => {
       if (!tokenRef.current || tokenRef.current.expiresAt < Date.now()) {
         expired();
         return { ok: false, error: "Anmeldung abgelaufen" };
@@ -184,16 +191,18 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/guests", {
         method: "POST",
         headers: { ...authHeader(), "Content-Type": "application/json" },
-        body: JSON.stringify({ action, email }),
+        body: JSON.stringify({ action, email, apps: apps ?? null }),
       });
-      const data = (await res.json().catch(() => ({}))) as { guests?: string[]; error?: string };
-      if (res.status === 400) return { ok: false, error: "Das ist keine gültige E-Mail-Adresse." };
+      const data = (await res.json().catch(() => ({}))) as { guests?: string[]; access?: Record<string, string[]>; error?: string };
+      if (res.status === 400)
+        return { ok: false, error: data.error === "bad_apps" ? "Wähl mindestens eine App aus." : "Das ist keine gültige E-Mail-Adresse." };
       if (res.status === 403) {
         expired();
         return { ok: false, error: "Anmeldung abgelaufen" };
       }
       if (!res.ok || !data.guests) return { ok: false, error: "Das hat nicht geklappt. Versuch es gleich noch einmal." };
       setGuests(data.guests);
+      if (data.access) setAccess(data.access);
       return { ok: true };
     },
     [expired],
@@ -261,10 +270,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signOut,
       guests,
+      access,
+      appsOf: (e) => access[e] ?? APPS.map((a) => a.id),
       admin,
       guestsConfigured,
       reloadGuests,
-      addGuest: (e) => change("add", e),
+      addGuest: (e, apps) => change("add", e, apps),
+      setGuestApps: (e, apps) => change("apps", e, apps),
       removeGuest: (e) => change("remove", e),
       status,
       statusAt,
@@ -272,7 +284,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       theme,
       setTheme,
     }),
-    [phase, error, signIn, signOut, guests, admin, guestsConfigured, reloadGuests, change, status, statusAt, reloadStatus, theme, setTheme],
+    [phase, error, signIn, signOut, guests, access, admin, guestsConfigured, reloadGuests, change, status, statusAt, reloadStatus, theme, setTheme],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
