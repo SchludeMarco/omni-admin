@@ -6,7 +6,8 @@ die gemeinsame Gästeliste und Einladungen an einem Ort. Design aus Google Stitc
 
 ## Was Omni Admin kann
 
-- **Startseite** – funkelnde Galaxie (Sterne, Nebel, Sternschnuppen) und das animierte Logo, bei dem nacheinander jede Spitze kurz dick wird
+- **Galaxie-Hintergrund** – funkelnde Sterne, Nebel und Sternschnuppen hinter der ganzen App (im dunklen Modus; die Anmeldeseite immer), Karten leicht durchsichtig
+- **Startseite** – das animierte Logo, bei dem nacheinander jede Spitze kurz dick wird
 - **Übersicht** – alle Apps mit Status (online / nicht erreichbar), Suche und Filter
 - **Gäste** – alle eingeladenen Gäste mit ihren Apps, Filter nach App, Apps pro Gast ändern, Gäste entfernen
 - **Einladen** – Google-Adresse eintragen, Apps auswählen (alle oder einzelne) und danach eine fertige Einladung per WhatsApp, E-Mail oder Zwischenablage verschicken

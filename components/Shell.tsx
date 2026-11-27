@@ -25,9 +25,8 @@ function Logo() {
 
 function Space({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden p-6 text-white">
-      <Galaxy />
-      <div className="relative z-10 w-full max-w-sm">{children}</div>
+    <div className="relative z-10 flex min-h-dvh items-center justify-center overflow-hidden p-6 text-white">
+      <div className="w-full max-w-sm">{children}</div>
     </div>
   );
 }
@@ -82,6 +81,17 @@ function Denied() {
 }
 
 export function Shell({ children }: { children: React.ReactNode }) {
+  const { phase } = useSession();
+  return (
+    <>
+      {/* Anmeldeseite immer mit Galaxie, in der App nur im dunklen Modus */}
+      <Galaxy always={phase !== "ready"} />
+      <Inner>{children}</Inner>
+    </>
+  );
+}
+
+function Inner({ children }: { children: React.ReactNode }) {
   const { phase, status, admin, guests, signOut } = useSession();
   const path = usePathname();
 
@@ -100,7 +110,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
   return (
-    <div className="min-h-dvh md:flex">
+    <div className="relative z-10 min-h-dvh md:flex">
       {/* Sidebar (Desktop) */}
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line/40 bg-s-lowest md:flex">
         <div className="flex items-center gap-3 px-5 py-5">

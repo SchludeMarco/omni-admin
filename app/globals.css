@@ -130,3 +130,27 @@ body {
     animation: none;
   }
 }
+
+/* ---- Galaxie hinter der ganzen App (nur im dunklen Modus) ---- */
+html:not(.dark) .galaxy:not(.galaxy-always) {
+  display: none;
+}
+.dark body {
+  background: #02030a;
+}
+/* Karten und Leisten leicht durchsichtig, damit die Sterne durchscheinen */
+.dark .bg-s-lowest {
+  background-color: rgb(var(--s-lowest) / 0.62);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.dark .bg-s-low {
+  background-color: rgb(var(--s-low) / 0.6);
+}
+.dark .bg-s-mid {
+  background-color: rgb(var(--s-mid) / 0.7);
+}
+.dark .bg-surface\/85,
+.dark .bg-surface\/90 {
+  background-color: rgb(var(--surface) / 0.55);
+}

@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 type Star = { x: number; y: number; r: number; phase: number; speed: number; hue: number; base: number };
 type Shooter = { x: number; y: number; vx: number; vy: number; life: number };
 
-export function Galaxy() {
+export function Galaxy({ always = false }: { always?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -62,7 +62,13 @@ export function Galaxy() {
       };
     }
 
+    let last = 0;
     const draw = (time: number) => {
+      if (!still && time - last < 33) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      last = time;
       const t = time / 1000;
       ctx.clearRect(0, 0, w, h);
       for (const s of stars) {
@@ -127,7 +133,7 @@ export function Galaxy() {
   }, []);
 
   return (
-    <div className="galaxy" aria-hidden>
+    <div className={always ? "galaxy galaxy-always" : "galaxy"} aria-hidden>
       <canvas ref={ref} />
     </div>
   );
