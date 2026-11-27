@@ -70,7 +70,7 @@ export default function AppDetail({ params }: { params: Promise<{ id: string }> 
             {app.extraUrls?.map((u) => (
               <Row key={u.url} icon="link" label={u.label}>
                 <a href={u.url} target="_blank" rel="noreferrer" className="text-accent">
-                  {new URL(u.url).host}
+                  {u.url.replace(/^https:\/\//, "")}
                 </a>
               </Row>
             ))}
